@@ -31,6 +31,10 @@ p {
 	margin-bottom: 1em;
 }
 
+.hide {
+  display: none;
+}
+
 .titleList {
 	padding: 20px 40px;
 	box-sizing: border-box;
