@@ -1,5 +1,6 @@
-const root = document.getElementById('root');
-const form = document.querySelector('.search');
+const root = document.getElementById("root");
+const form = document.querySelector(".search");
+const searchResults = document.querySelector(".searchResults");
 let tempMovie;
 let searchedMovies = [];
 
@@ -24,10 +25,10 @@ function genreSearch() {
       return data.json();
     })
     .then((json) => {
-      json.genres.forEach(ele => {
+      json.genres.forEach((ele) => {
         insertGenres(ele.name, ele.id);
-      })
-    })
+      });
+    });
 }
 
 function moviePrint(dataResults) {
@@ -37,9 +38,11 @@ function moviePrint(dataResults) {
       let titlesWrapper;
 
       if (ele !== null) {
-        ele.classList.remove('hide');
-        titlesWrapper= ele.querySelector('.titles-wrapper');
-        titlesWrapper.insertAdjacentHTML('beforeend', `
+        ele.classList.remove("hide");
+        titlesWrapper = ele.querySelector(".titles-wrapper");
+        titlesWrapper.insertAdjacentHTML(
+          "beforeend",
+          `
         <div class="movie">
         <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
         <div class="overlay">
@@ -56,14 +59,17 @@ function moviePrint(dataResults) {
             </div>
           </div>
         </div>
-      `)
+      `
+        );
       }
     });
   });
 }
 
 function insertGenres(genreName, genreId) {
-  root.insertAdjacentHTML('beforeend', `
+  root.insertAdjacentHTML(
+    "beforeend",
+    `
     <div class="titleList y${genreId} hide">
     <div class="title">
       <h1>${genreName}</h1>
@@ -72,7 +78,8 @@ function insertGenres(genreName, genreId) {
         </div>
       </div>
     </div>
-  `)
+  `
+  );
 }
 
 genreSearch();
@@ -84,32 +91,47 @@ function findingMovie(string) {
     let movieTitle = movie.title.toLowerCase();
     let movieOverview = movie.overview.toLowerCase();
     let searchString = string.toLowerCase();
-    
-    if (movieTitle.includes(searchString) || movieOverview.includes(searchString)) {
-      searchedMovies.push(movie)
-    }
 
-    
-  })
+    if (
+      movieTitle.includes(searchString) ||
+      movieOverview.includes(searchString)
+    ) {
+      searchedMovies.push(movie);
+    }
+  });
   console.log(searchedMovies);
   return searchedMovies;
 }
 
-form.addEventListener('keyup', event => {
-  let elementsWithTitle = document.querySelectorAll('.movie');
+form.addEventListener("keyup", (event) => {
+  let elementsWithTitle = document.querySelectorAll(".movie");
   let titleListEles;
 
-  if (event.target.value !== ""){
+  if (event.target.value !== "") {
     findingMovie(event.target.value);
-    elementsWithTitle.forEach(ele => {
+    elementsWithTitle.forEach((ele) => {
       ele.parentNode.removeChild(ele);
     });
 
-    titleListEles = document.querySelectorAll('.titleList');
-    titleListEles.forEach(ele => {
-      ele.classList.add('hide');
+    titleListEles = document.querySelectorAll(".titleList");
+    titleListEles.forEach((ele) => {
+      ele.classList.add("hide");
     });
 
     moviePrint(searchedMovies);
+
+    searchResults.textContent = `Found ${searchedMovies.length} with the query "${event.target.value}"`;
+  } else {
+    elementsWithTitle.forEach((ele) => {
+      ele.parentNode.removeChild(ele);
+    });
+
+    titleListEles = document.querySelectorAll(".titleList");
+    titleListEles.forEach((ele) => {
+      ele.classList.add("hide");
+    });
+
+    searchResults.textContent = `Found ${searchedMovies.length} with the query "${event.target.value}"`;
+    moviePrint(tempMovie);
   }
-})
+});
