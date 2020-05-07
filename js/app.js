@@ -3,6 +3,7 @@ const form = document.querySelector(".search");
 const searchResults = document.querySelector(".searchResults");
 let tempMovie;
 let searchedMovies = [];
+let myListArray = [];
 
 function gettingTrendingMovies() {
   fetch(
@@ -51,7 +52,7 @@ function moviePrint(dataResults) {
           <div class="plot">
             ${movie.overview}
           </div>
-          <div class="listToggle">
+          <div class="listToggle" data-toggled="false">
             <div>
               <i class="fa fa-fw fa-plus"></i>
               <i class="fa fa-fw fa-check"></i>
@@ -118,10 +119,11 @@ form.addEventListener("keyup", (event) => {
       ele.classList.add("hide");
     });
 
-    moviePrint(searchedMovies);
-
     searchResults.textContent = `Found ${searchedMovies.length} with the query "${event.target.value}"`;
+    moviePrint(searchedMovies);
   } else {
+    searchResults.textContent = "";
+
     elementsWithTitle.forEach((ele) => {
       ele.parentNode.removeChild(ele);
     });
@@ -131,7 +133,19 @@ form.addEventListener("keyup", (event) => {
       ele.classList.add("hide");
     });
 
-    searchResults.textContent = `Found ${searchedMovies.length} with the query "${event.target.value}"`;
     moviePrint(tempMovie);
   }
 });
+
+root.addEventListener('click', function(e) {
+  if (e.target.nodeName === "I") {
+    let listToggle = e.target.parentNode.parentNode;
+    let movieEle = listToggle.parentNode.parentNode;
+
+    if (listToggle.getAttribute('data-toggled') === 'false') {
+      listToggle.setAttribute('data-toggled', 'true');
+    } else {
+      listToggle.setAttribute('data-toggled', 'false');
+    }
+  }
+})
