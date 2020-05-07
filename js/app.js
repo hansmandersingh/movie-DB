@@ -2,7 +2,7 @@ const root = document.getElementById('root');
 
 function gettingTrendingMovies() {
   fetch(
-    "https://api.themoviedb.org/3/trending/movie/week?api_key=7b403300d752c7d5e552aa9ff4e21a66"
+    "https://api.themoviedb.org/3/trending/all/week?api_key=7b403300d752c7d5e552aa9ff4e21a66"
   )
     .then((data) => {
       return data.json();
@@ -11,10 +11,12 @@ function gettingTrendingMovies() {
       data.results.forEach((movie) => {
         movie.genre_ids.forEach((genre) => {
           let ele = root.querySelector(`.y${genre}`);
-          ele.classList.remove('hide');
-          let titlesWrapper = ele.querySelector('.titles-wrapper');
+          let titlesWrapper;
 
-          titlesWrapper.insertAdjacentHTML('beforeend', `
+          if (ele !== null) {
+            ele.classList.remove('hide');
+            titlesWrapper= ele.querySelector('.titles-wrapper');
+            titlesWrapper.insertAdjacentHTML('beforeend', `
             <div class="movie">
             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
             <div class="overlay">
@@ -32,6 +34,7 @@ function gettingTrendingMovies() {
               </div>
             </div>
           `)
+          }
         });
       });
     });
