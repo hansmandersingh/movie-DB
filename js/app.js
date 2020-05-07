@@ -1,4 +1,7 @@
 const root = document.getElementById('root');
+const form = document.querySelector('.search');
+let tempMovie;
+let searchedMovies = [];
 
 function gettingTrendingMovies() {
   fetch(
@@ -8,6 +11,7 @@ function gettingTrendingMovies() {
       return data.json();
     })
     .then((data) => {
+      tempMovie = data.results;
       moviePrint(data.results);
     });
 }
@@ -74,4 +78,38 @@ function insertGenres(genreName, genreId) {
 genreSearch();
 gettingTrendingMovies();
 
+function findingMovie(string) {
+  searchedMovies = [];
+  tempMovie.forEach((movie) => {
+    let movieTitle = movie.title.toLowerCase();
+    let movieOverview = movie.overview.toLowerCase();
+    let searchString = string.toLowerCase();
+    
+    if (movieTitle.includes(searchString) || movieOverview.includes(searchString)) {
+      searchedMovies.push(movie)
+    }
 
+    
+  })
+  console.log(searchedMovies);
+  return searchedMovies;
+}
+
+form.addEventListener('keyup', event => {
+  let elementsWithTitle = document.querySelectorAll('.movie');
+  let titleListEles;
+
+  if (event.target.value !== ""){
+    findingMovie(event.target.value);
+    elementsWithTitle.forEach(ele => {
+      ele.parentNode.removeChild(ele);
+    });
+
+    titleListEles = document.querySelectorAll('.titleList');
+    titleListEles.forEach(ele => {
+      ele.classList.add('hide');
+    });
+
+    moviePrint(searchedMovies);
+  }
+})
