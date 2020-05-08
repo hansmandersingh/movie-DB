@@ -150,6 +150,7 @@ function uniqueArr() {
 }
 
 function redraw() {
+  uniqueArr();
   let createMovieWrap = document.querySelector('.titles-wrapper');
 
   createMovieWrap.innerHTML = "";
@@ -202,13 +203,13 @@ root.addEventListener('click', function(e) {
           })
           toggleEle.setAttribute('data-toggled', 'false');
         } 
+        console.log(tempArrayToUse)
       }
-      uniqueArr();
     });
 
-    console.log(tempArrayToUse)
-    
-    console.log(newArraytoget)
+    // console.log(tempArrayToUse)
+    uniqueArr();
+    // console.log(newArraytoget)
   }
 })
 
@@ -235,12 +236,27 @@ navigation.addEventListener('click' , function(e) {
   `
   );
 
-  redraw();
+  
+  console.log(newArraytoget)
 
   root.addEventListener('click', function(e) {
     if (e.target.nodeName === "I") {
-      redraw()
+      let listToggle = e.target.parentNode.parentNode;
+      let movieData = listToggle.parentNode.parentNode;
+
+      console.log(listToggle.getAttribute('data-toggled'))
+      if (listToggle.getAttribute('data-toggled') === 'false') {
+        console.log(newArraytoget)
+        redraw();
+      }
+
+      newArraytoget.forEach(ele => {
+        newArraytoget.splice(newArraytoget.indexOf(ele.title), 1)
+      })
+
+      
     }
   })
-  
+
+  redraw();
 })
