@@ -1,11 +1,12 @@
 const root = document.getElementById("root");
 const form = document.querySelector(".search");
 const searchResults = document.querySelector(".searchResults");
-const navigation = document.querySelector('.navigation');
+const navigation = document.querySelector("[href='/myList']");
 let tempMovie;
 let searchedMovies = [];
-let myListArray = [];
+let tempArrayToUse = [];
 let newArraytoget = [];
+
 
 function gettingTrendingMovies() {
   fetch(
@@ -136,51 +137,110 @@ form.addEventListener("keyup", (event) => {
   }
 });
 
+function uniqueArr() {
+  newArraytoget = [];
+  let uniqueObj = {};
+  for (let i in tempArrayToUse) {
+    let objTitle = tempArrayToUse[i].title;
+    uniqueObj[objTitle] = tempArrayToUse[i];
+  }
+  for (let i in uniqueObj) {
+    newArraytoget.push(uniqueObj[i]);
+  }
+}
+
+function redraw() {
+  let createMovieWrap = document.querySelector('.titles-wrapper');
+
+  createMovieWrap.innerHTML = "";
+
+  newArraytoget.forEach(movie => {
+    createMovieWrap.insertAdjacentHTML('beforeend', `
+    <div class="movie" data-movie="${movie.title.toLowerCase()}">
+    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
+    <div class="overlay">
+      <div class="title">${movie.title}</div>
+      <div class="rating">${movie.vote_average}/10</div>
+      <div class="plot">
+        ${movie.overview}
+      </div>
+      <div class="listToggle" data-toggled="true">
+        <div>
+          <i class="fa fa-fw fa-plus"></i>
+          <i class="fa fa-fw fa-check"></i>
+        </div>
+        </div>
+      </div>
+    </div>
+  `)
+  })
+}
+
 
 root.addEventListener('click', function(e) {
   if (e.target.nodeName === "I") {
     let listToggle = e.target.parentNode.parentNode;
-    let movieEle = listToggle.parentNode.parentNode;
-    let movieEleData = movieEle.getAttribute('data-movie');
-
-    tempMovie.forEach(movie => {
-      if ((movie.title.toLowerCase() === movieEleData)) {
-        
-        let allMoviesToChange = document.querySelectorAll(`[data-movie ='${movie.title.toLowerCase()}']`);
-
-        allMoviesToChange.forEach(movieToChange => {
-          let checkData = movieToChange.querySelector('.listToggle');
-
-          if (checkData.getAttribute('data-toggled') == 'false') {
-            myListArray.push(movie);
-            checkData.setAttribute('data-toggled', 'true');
-            console.log(myListArray)
-          }else {
-            if (myListArray.length !== 0){
-              myListArray.splice( myListArray.indexOf(movieEleData), 1);
-            }
-            console.log(myListArray)
-            checkData.setAttribute('data-toggled', 'false');
-          }
-        })
-      }
-    })
-
+    let movieData = listToggle.parentNode.parentNode;
+    let allMovies = document.querySelectorAll('.movie');
     
-    let uniqueObj = {};
-    for (let i in myListArray) {
-      let objTitle = myListArray[i].title;
-      uniqueObj[objTitle] = myListArray[i];
-    }
-    for (let i in uniqueObj) {
-      newArraytoget.push(uniqueObj[i]);
-    }
+    
+    allMovies.forEach(element => {
+      if (element.getAttribute('data-movie') === movieData.getAttribute('data-movie')) {
+        let toggleEle = element.querySelector('.listToggle');
+        if (toggleEle.getAttribute('data-toggled') === 'false'){
+          tempMovie.forEach(e => {
+            if (e.title.toLowerCase() === movieData.getAttribute('data-movie')){
+              tempArrayToUse.push(e);
+            }
+          })
+          toggleEle.setAttribute('data-toggled', 'true');
+        } else {
+          tempArrayToUse.forEach(e => {
+            if (e.title.toLowerCase() === movieData.getAttribute('data-movie')) {
+              tempArrayToUse.splice(tempArrayToUse.indexOf(e), 1);
+            }
+          })
+          toggleEle.setAttribute('data-toggled', 'false');
+        } 
+      }
+      uniqueArr();
+    });
+
+    console.log(tempArrayToUse)
+    
     console.log(newArraytoget)
-
-
   }
 })
 
-navigation.addEventListener('click', (event) => {
-  if (event.target.nodeName === )
+navigation.addEventListener('click' , function(e) {
+  e.preventDefault();
+
+  let allTitleList = document.querySelectorAll('.titleList');
+
+  allTitleList.forEach((ele) => {
+    ele.parentNode.removeChild(ele);
+  });
+
+  root.insertAdjacentHTML(
+    "beforeend",
+    `
+    <div class="titleList">
+    <div class="title">
+      <h1>My List</h1>
+      <div class="titles-wrapper">
+        
+        </div>
+      </div>
+    </div>
+  `
+  );
+
+  redraw();
+
+  root.addEventListener('click', function(e) {
+    if (e.target.nodeName === "I") {
+      redraw()
+    }
+  })
+  
 })
