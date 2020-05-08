@@ -1,9 +1,11 @@
 const root = document.getElementById("root");
 const form = document.querySelector(".search");
 const searchResults = document.querySelector(".searchResults");
+const navigation = document.querySelector('.navigation');
 let tempMovie;
 let searchedMovies = [];
 let myListArray = [];
+let newArraytoget = [];
 
 function gettingTrendingMovies() {
   fetch(
@@ -44,7 +46,7 @@ function moviePrint(dataResults) {
         titlesWrapper.insertAdjacentHTML(
           "beforeend",
           `
-        <div class="movie">
+        <div class="movie" data-movie="${movie.title.toLowerCase()}">
         <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
         <div class="overlay">
           <div class="title">${movie.title}</div>
@@ -93,10 +95,7 @@ function findingMovie(string) {
     let movieOverview = movie.overview.toLowerCase();
     let searchString = string.toLowerCase();
 
-    if (
-      movieTitle.includes(searchString) ||
-      movieOverview.includes(searchString)
-    ) {
+    if (movieTitle.includes(searchString) ||  movieOverview.includes(searchString)) {
       searchedMovies.push(movie);
     }
   });
@@ -137,15 +136,51 @@ form.addEventListener("keyup", (event) => {
   }
 });
 
+
 root.addEventListener('click', function(e) {
   if (e.target.nodeName === "I") {
     let listToggle = e.target.parentNode.parentNode;
     let movieEle = listToggle.parentNode.parentNode;
+    let movieEleData = movieEle.getAttribute('data-movie');
 
-    if (listToggle.getAttribute('data-toggled') === 'false') {
-      listToggle.setAttribute('data-toggled', 'true');
-    } else {
-      listToggle.setAttribute('data-toggled', 'false');
+    tempMovie.forEach(movie => {
+      if ((movie.title.toLowerCase() === movieEleData)) {
+        
+        let allMoviesToChange = document.querySelectorAll(`[data-movie ='${movie.title.toLowerCase()}']`);
+
+        allMoviesToChange.forEach(movieToChange => {
+          let checkData = movieToChange.querySelector('.listToggle');
+
+          if (checkData.getAttribute('data-toggled') == 'false') {
+            myListArray.push(movie);
+            checkData.setAttribute('data-toggled', 'true');
+            console.log(myListArray)
+          }else {
+            if (myListArray.length !== 0){
+              myListArray.splice( myListArray.indexOf(movieEleData), 1);
+            }
+            console.log(myListArray)
+            checkData.setAttribute('data-toggled', 'false');
+          }
+        })
+      }
+    })
+
+    
+    let uniqueObj = {};
+    for (let i in myListArray) {
+      let objTitle = myListArray[i].title;
+      uniqueObj[objTitle] = myListArray[i];
     }
+    for (let i in uniqueObj) {
+      newArraytoget.push(uniqueObj[i]);
+    }
+    console.log(newArraytoget)
+
+
   }
+})
+
+navigation.addEventListener('click', (event) => {
+  if (event.target.nodeName === )
 })
