@@ -158,7 +158,7 @@ function redraw() {
   newArraytoget.forEach(movie => {
     createMovieWrap.insertAdjacentHTML('beforeend', `
     <div class="movie" data-movie="${movie.title.toLowerCase()}">
-    <img src="https://image.tmdb.org/t/p/w500${movie.backdrop_path}">
+    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
     <div class="overlay">
       <div class="title">${movie.title}</div>
       <div class="rating">${movie.vote_average}/10</div>
