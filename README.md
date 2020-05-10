@@ -8,4 +8,4 @@ This project uses movie db api and populates home page with latest movie you can
 
 To remove the movie from list you have to double click the icon - this is a known bug and i will fix this in the future.
 
-See this site here - `https://hansmandersingh.github.io/movie-DB/`
+See this site here - https://hansmandersingh.github.io/movie-DB/
