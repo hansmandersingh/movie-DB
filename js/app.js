@@ -105,6 +105,7 @@ function findingMovie(string) {
 }
 
 form.addEventListener("keyup", (event) => {
+  event.preventDefault();
   let elementsWithTitle = document.querySelectorAll(".movie");
   let titleListEles;
 
