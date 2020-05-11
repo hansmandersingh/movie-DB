@@ -1,6 +1,8 @@
 # movie-DB
 movie-DB tests
 
+![GitHub Logo](/tmdb.png)
+Format: ![Alt Text](url)
 
 This is first github project so sorry for my bad commits and merging.
 
